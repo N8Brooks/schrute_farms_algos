@@ -5,7 +5,6 @@ Created on Tue Nov 26 09:45:16 2019
 @author: Nathan
 """
 
-
 class trie:
     """ trie node """
     def __init__(self):

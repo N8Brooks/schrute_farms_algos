@@ -34,7 +34,7 @@ def fib_log_free(n):
     if n % 2:
         return fibk * (2 * fibj + fibk)
     else:
-        return fibk ** 2 + fibj ** 2
+        return fibk * fibk + fibj * fibj
 
 def fib_log_memo(n, dp={0:1, 1:1}):
     # O(log(n))
@@ -47,7 +47,7 @@ def fib_log_memo(n, dp={0:1, 1:1}):
     if n % 2:
         return dp.setdefault(n, fibk * (2 * fibj + fibk))
     else:
-        return dp.setdefault(n, fibk ** 2 + fibj ** 2)
+        return dp.setdefault(n, fibk * fibk + fibj * fibj)
 
 def fib_const(n):
     return round(((1 + 5**0.5) / 2) ** (n + 1) / 5**0.5)

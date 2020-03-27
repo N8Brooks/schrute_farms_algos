@@ -9,6 +9,7 @@ from functools import reduce
 from operator import mul
 from itertools import combinations
 from math import gcd
+from random import randrange
 
 def xgcd(a, b):
     """extended greatest common divisor"""
@@ -25,7 +26,7 @@ def lcm(a, b):
     """return the lowest integer which both a and b divide"""
     return abs(a * b) // gcd(a, b)
 
-def is_prime(n):
+def prime(n):
     """return if n is prime"""
     # return if it is 2 or 3
     if n < 4: return n > 1
@@ -34,13 +35,42 @@ def is_prime(n):
     # check other cases
     return all(n % i and n % (i + 2) for i in range(5, int(n ** 0.5) + 1, 6))
 
+def fermat(n, a=2):
+    """returns if n is probably prime according to fermat's primality test"""
+    return pow(a, n-1, n) == 1
+
+def mrpt(n, k=9):
+    """miller rabin primality test"""
+    """return if n is probably prime given k random witnesses"""
+    if n < 4: return n > 1
+    if n % 2 == 0 or n % 3 == 0: return False
+    
+    r = -1
+    d = n - 1
+    while d % 2 == 0:
+        r += 1
+        d //= 2
+    
+    for _ in range(k):
+        x = pow(randrange(2, n-1), d, n)
+        if x == 1 or x == n - 1:
+            continue
+        for _ in range(r):
+            x = pow(x, 2, n)
+            if x == n - 1:
+                break
+        else:
+            return False
+    
+    return True
+
 def prime_sieve(n):
     """generate the primes less than n using the sieve of eratosthenes."""
     a = [False, False] + [True] * (n - 2)
     for i, isprime in enumerate(a):
         if isprime:
             yield i
-            for j in range(i**2, n, i):
+            for j in range(i * i, n, i):
                 a[j] = False
 
 def factor(n):
@@ -81,9 +111,10 @@ def crt(r, m):
     """return x such that x = r (mod m) for all a and n"""
     total = 0
     prod = reduce(mul, m)
-    for n_i, a_i in zip(m, r):
-        p = prod // n_i
-        total += a_i * xgcd(n_i, p)[2] * p
+    for m_i, r_i in zip(m, r):
+        p = prod // m_i
+        total += r_i * xgcd(m_i, p)[2] * p
+    
     return total % prod
 
 def bsgs(g, r, p):
@@ -108,10 +139,13 @@ def pha(g, r, p):
     """return x such that g^x = r (mod p)"""
     u = p - 1
     ms = [base**exp for base, exp in factor(u).items()]
-    rs = [bsgs(pow(g, x, p), pow(r, x, p), p) for x in map(lambda x: u//x, ms)]
+    rs = [bsgs(pow(g, x, p), pow(r, x, p), p) for x in (u // x for x in ms)]
     return crt(rs, ms)
 
-
+def find_base(e, r, p):
+    """returns x such that x^e = r (mod p)"""
+    phi = reduce(mul, (x-1 for x in factor(p)))
+    return pow(r, xgcd(e, phi)[1] % phi, p)
 
 
 

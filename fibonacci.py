@@ -61,7 +61,7 @@ if __name__ == '__main__':
     
     algorithms = [fib_log_memo, fib_log_free]
     
-    for i in trange(32):
+    for i in trange(32, 40):
         i = 2 ** i
         record = pd.Series(name=i)
         for algo in algorithms:

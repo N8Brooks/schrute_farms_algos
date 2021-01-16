@@ -9,10 +9,11 @@ Created on Sat Mar 21 16:29:13 2020
 from array import array
 from bisect import bisect_left
 
-def longest_increasing_subsequence(nums) -> int:        
-    tails = array('i')
+
+def longest_increasing_subsequence(nums) -> int:
+    tails = array("i")
     count = 0
-    
+
     for x in nums:
         i = bisect_left(tails, x)
         if i == count:
@@ -20,5 +21,5 @@ def longest_increasing_subsequence(nums) -> int:
             count += 1
         else:
             tails[i] = x
-            
+
     return count

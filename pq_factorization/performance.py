@@ -17,13 +17,26 @@ from ecm import ecm
 from mpqs import mpqs
 
 from cypari import pari
+
+
 def gfns(n):
     return pari(n).factorint()
 
-algorithms = [brent_rho, pollard_rho, fermat, fermat_sieve, trial_division, ecm, william_pp1, mpqs]
-#algorithms = [congrunce_of_squares]
-#algorithms = [gfns]
+
+algorithms = [
+    brent_rho,
+    pollard_rho,
+    fermat,
+    fermat_sieve,
+    trial_division,
+    ecm,
+    william_pp1,
+    mpqs,
+]
+# algorithms = [congrunce_of_squares]
+# algorithms = [gfns]
 algorithms = [ecm, ecm1]
+
 
 def pqs(n):
     """
@@ -32,7 +45,7 @@ def pqs(n):
     ret = {4, 6, 9} if n == 1 else set()
     y = n // 2
     x = n - y
-    bp1, bq1 = 10**(y - 1), 10**(x - 1)
+    bp1, bq1 = 10 ** (y - 1), 10 ** (x - 1)
     bp2, bq2 = bp1 * 10, bq1 * 10
     while len(ret) < 3:
         p = 1
@@ -45,7 +58,8 @@ def pqs(n):
             ret.add(p * q)
     return ret
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     df = pd.DataFrame(columns=[x.__name__ for x in algorithms])
     pbar = trange(3, 200)
     for i in pbar:
@@ -54,7 +68,7 @@ if __name__ == '__main__':
         for algo in algorithms:
             pbar.desc = algo.__name__
             pbar.refresh()
-            best = 2**9
+            best = 2 ** 9
             for x in data:
                 t0 = time()
                 algo(x)

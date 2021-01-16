@@ -5,6 +5,7 @@ Created on Tue Nov 26 09:45:16 2019
 @author: Nathan
 """
 
+
 class Trie:
     def __init__(self):
         self.trie = dict()
@@ -39,4 +40,3 @@ class Trie:
                 return False
             cur = cur[c]
         return True
-  

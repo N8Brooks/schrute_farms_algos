@@ -12,13 +12,17 @@ from random import randrange
 from sympy import isprime
 from imath import ispower
 
+
 def pollard_rho(n):
     """
     return factor of n using pollard's rho algorithm with floyd cycle detection
     """
-    if n < 0: return pollard_rho(-n)
-    if n % 2 == 0: return 2
-    if n == 0 or n == 1 or isprime(n): return n
+    if n < 0:
+        return pollard_rho(-n)
+    if n % 2 == 0:
+        return 2
+    if n == 0 or n == 1 or isprime(n):
+        return n
     d = 1
     x = y = 2
     while True:
@@ -32,12 +36,15 @@ def pollard_rho(n):
             x = randrange(1, n)
             y = randrange(1, n)
 
+
 def brent_rho(n):
     """
     returns factor of n using pollar rho algorithm with brent cycle detection
     """
-    if n < 0: return brent_rho(-n)
-    if n == 0 or n == 1 or isprime(n): return n
+    if n < 0:
+        return brent_rho(-n)
+    if n == 0 or n == 1 or isprime(n):
+        return n
     g = n
     while g == n:
         y = randrange(1, n)
@@ -62,6 +69,5 @@ def brent_rho(n):
             while g == 1:
                 ys = (ys * ys + c) % n
                 g = gcd(abs(x - ys), n)
-    
+
     return g
-    

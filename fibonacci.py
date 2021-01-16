@@ -37,7 +37,7 @@ def fib_log_free(n):
         return fibk * fibk + fibj * fibj
 
 def fib_log_memo(n, dp={0:1, 1:1}):
-    # O(log(n))
+    # O(log(n)) ... kind of
     if n in dp:
         return dp[n]
     
@@ -49,26 +49,48 @@ def fib_log_memo(n, dp={0:1, 1:1}):
     else:
         return dp.setdefault(n, fibk * fibk + fibj * fibj)
 
+def fib_log_knap(n):
+    # knapsack to find relevent fibonacci indexes
+    keys = cur = {n}
+    for _ in range(n.bit_length() + 1):
+        cur = {x // 2 for x in cur} | {x // 2 - 1 for x in cur}
+        keys.update(cur)
+    keys.difference_update(range(-2, 2))
+    
+    # calculate fibonacci for each index
+    dp = {0:1, 1:1}
+    for n in sorted(keys):
+        if n - 2 in keys and n - 1 in keys:
+            dp[n] = dp[n - 2] + dp[n - 1]
+        else:
+            fibj = dp[n // 2 - 1]
+            fibk = dp[n // 2]
+            dp[n] = fibk * (2*fibj+fibk) if n%2 else fibk * fibk + fibj * fibj
+    return dp[n]
+
 def fib_const(n):
+    # O(1) ... kind of
     return round(((1 + 5**0.5) / 2) ** (n + 1) / 5**0.5)
 
 if __name__ == '__main__':
     import pandas as pd
-    import time
+    from time import time
     from tqdm import trange
     
-    df = pd.DataFrame()
+    algorithms = [fib_log_memo, fib_log_free, fib_log_knap]
     
-    algorithms = [fib_log_memo, fib_log_free]
-    
-    for i in trange(32, 40):
+    df = pd.DataFrame(columns=[algo.__name__ for algo in algorithms])
+    pbar = trange(0, 32)
+    for i in pbar:
         i = 2 ** i
+        pbar.desc = str(i)
+        pbar.refresh()
         record = pd.Series(name=i)
         for algo in algorithms:
-            start = time.clock()
+            start = time()
             algo(i)
-            record[algo.__name__] = time.clock() - start
-        df[i] = record
+            record[algo.__name__] = time() - start
+        df.loc[i] = record
     df = df.transpose()
     
     df.plot()

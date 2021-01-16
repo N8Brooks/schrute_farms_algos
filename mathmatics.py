@@ -7,8 +7,7 @@ Created on Fri Jan 31 13:28:50 2020
 
 from functools import reduce
 from operator import mul
-from itertools import combinations
-from math import gcd
+from math import gcd, prod
 from random import randrange
 
 
@@ -119,12 +118,12 @@ def crt(r, m):
     """chinese remainder theorem"""
     """return x such that x = r (mod m) for all a and n"""
     total = 0
-    prod = reduce(mul, m)
+    product = prod(m)
     for m_i, r_i in zip(m, r):
-        p = prod // m_i
+        p = product // m_i
         total += r_i * imod(p, m_i) * p
 
-    return total % prod
+    return total % product
 
 
 def bsgs(g, r, p):
@@ -186,11 +185,11 @@ def ilog(x, b):
     """
     greatest integer l such that b**l <= x.
     """
-    l = 0
+    i = 0
     while x >= b:
         x //= b
-        l += 1
-    return l
+        i += 1
+    return i
 
 
 def imod(a, m):
@@ -293,18 +292,15 @@ def order(a, p):
     """
     tests the divisors of p - 1
     """
-    if prime(p) == False or a % p == 0:
+    if not prime(p) or a % p == 0:
         return False
     for k in divisors(p - 1):
         if pow(a, k, p) == 1:
             return k
 
 
-def isgenerator(a, p):
+def is_generator(a, p):
     """
     returns if a is generator/primative root modulo p
     """
-    if prime(p) == False:
-        return False
-    if order(a, p) == p - 1:
-        return True
+    return prime(p) and order(a, p) == p - 1

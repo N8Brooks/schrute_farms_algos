@@ -6,34 +6,33 @@ Created on Tue Nov 26 09:45:16 2019
 """
 
 
+from typing import Iterable
+
+
 class Trie:
-    def __init__(self):
+    def __init__(self, words: Iterable[str] = tuple()) -> None:
         self.trie = dict()
+        for word in words:
+            self.insert(word)
 
-    def insert(self, word: str) -> None:
-        """
-        Inserts a word into the trie.
-        """
-        cur = self.trie
-        for c in word:
-            cur = cur.setdefault(c, dict())
-        cur[True] = None
-
-    def search(self, word: str) -> bool:
-        """
-        Returns if the word is in the trie.
-        """
+    def __contains__(self, word: str) -> bool:
+        # Trie contains the given word
         cur = self.trie
         for c in word:
             if c not in cur:
                 return False
             cur = cur[c]
-        return True in cur
+        return None in cur
 
-    def startsWith(self, prefix: str) -> bool:
-        """
-        Returns if there is any word in the trie that starts with the given prefix.
-        """
+    def insert(self, word: str) -> None:
+        # Insert the word in the trie
+        cur = self.trie
+        for c in word:
+            cur = cur.setdefault(c, {})
+        cur[None] = None
+
+    def startswith(self, prefix: str) -> bool:
+        # Current trie contains the given prefix
         cur = self.trie
         for c in prefix:
             if c not in cur:

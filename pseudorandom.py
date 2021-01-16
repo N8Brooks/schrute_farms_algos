@@ -7,10 +7,10 @@ Created on Sun Mar  1 09:35:06 2020
 """
 
 from random import randrange
+from math import isqrt
 
 
 def is_prime(n):
-    """return if n is prime"""
     # return if it is 2 or 3
     if n < 4:
         return n > 1
@@ -18,7 +18,7 @@ def is_prime(n):
     if n % 2 == 0 or n % 3 == 0:
         return False
     # check other cases
-    return all(n % i and n % (i + 2) for i in range(5, int(n ** 0.5) + 1, 6))
+    return all(n % i and n % (i + 2) for i in range(5, isqrt(n) + 1, 6))
 
 
 def get_prime(n):
@@ -29,16 +29,14 @@ def get_prime(n):
             return x
 
 
-def linear_recurrence(seed, a, x, n):
+def linear_recurrence(seed, a, c, n):
     while True:
-        seed = (a * seed + c) % n
-        yield seed
+        yield (seed := (a * seed + c) % n)
 
 
 def square_last_term(seed, n=get_prime(8) * get_prime(8)):
     while True:
-        seed = pow(seed, 2, n)
-        yield seed
+        yield (seed := pow(seed, 2, n))
 
 
 def square_the_middle(seed, n=4):
@@ -49,5 +47,4 @@ def square_the_middle(seed, n=4):
         seed **= 2
         while 0 < seed < min_digit:
             seed *= 10
-        seed = seed // half % max_digit
-        yield seed
+        yield (seed := seed // half % max_digit)

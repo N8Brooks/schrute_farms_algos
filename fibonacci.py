@@ -6,12 +6,15 @@ Created on Sun Feb  9 14:07:35 2020
 """
 
 
-def fib_exp(n):
+from functools import cache
+
+
+def fib_exp(n: int) -> int:
     # O(1.6180^n)
     return 1 if n < 2 else fib_exp(n - 1) + fib_exp(n - 2)
 
 
-def fib_dyn(n):
+def fib_dyn(n: int) -> int:
     # O(n)
     memo = [1, 1] + [0] * (n - 1)
     for i in range(2, n + 1):
@@ -19,7 +22,7 @@ def fib_dyn(n):
     return memo[-1]
 
 
-def fib_lin(n):
+def fib_lin(n: int) -> int:
     # O(n)
     a = b = 1
     for _ in range(n - 1):
@@ -27,40 +30,33 @@ def fib_lin(n):
     return b
 
 
-def fib_log_free(n):
+def fib_log_free(n: int) -> int:
     # O(log(n))
-    if n < 2:
+    if n <= 1:
         return 1
 
     fibj = fib_log_free(n // 2 - 1)
     fibk = fib_log_free(n // 2)
 
-    if n % 2:
-        return fibk * (2 * fibj + fibk)
-    else:
-        return fibk * fibk + fibj * fibj
+    return fibk * (2 * fibj + fibk) if n % 2 else fibk * fibk + fibj * fibj
 
 
-def fib_log_memo(n, dp={0: 1, 1: 1}):
-    # O(log(n)) ... kind of
-    if n in dp:
-        return dp[n]
+@cache
+def fib_log_memo(n: int) -> int:
+    if n <= 1:
+        return 1
 
-    fibj = fib_log_memo(n // 2 - 1, dp)
-    fibk = fib_log_memo(n // 2, dp)
+    fibj = fib_log_memo(n // 2 - 1)
+    fibk = fib_log_memo(n // 2)
 
-    if n % 2:
-        return dp.setdefault(n, fibk * (2 * fibj + fibk))
-    else:
-        return dp.setdefault(n, fibk * fibk + fibj * fibj)
+    return fibk * (2 * fibj + fibk) if n % 2 else fibk * fibk + fibj * fibj
 
 
-def fib_log_knap(n):
+def fib_log_knap(n: int) -> int:
     # knapsack to find relevent fibonacci indexes
     keys = cur = {n}
     for _ in range(n.bit_length() + 1):
-        cur = {x // 2 for x in cur} | {x // 2 - 1 for x in cur}
-        keys.update(cur)
+        keys.update({x // 2 for x in cur}.union(x // 2 - 1 for x in cur))
     keys.difference_update(range(-2, 2))
 
     # calculate fibonacci for each index
@@ -75,7 +71,7 @@ def fib_log_knap(n):
     return dp[n]
 
 
-def fib_const(n):
+def fib_const(n: int) -> int:
     # O(1) ... kind of
     return round(((1 + 5 ** 0.5) / 2) ** (n + 1) / 5 ** 0.5)
 

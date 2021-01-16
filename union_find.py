@@ -42,7 +42,7 @@ class union_find_dict:
     """ union find that uses dictionary """
 
     def __init__(self):
-        self.parent = dict()
+        self.parent = {}
 
     def find(self, x):
         if self.parent.setdefault(x, x) == x:
@@ -58,7 +58,7 @@ class union_find_dict_count:
     """ union find that maintains group count with dictionary """
 
     def __init__(self):
-        self.parent = dict()
+        self.parent = {}
         self.count = 0
 
     def find(self, x):

@@ -71,22 +71,21 @@ def lcs_dynamic(a, b):
     return a[index - longest : index]
 
 
-# In[]
+if __name__ == "__main__":
+    import pandas as pd
+    from random import choices
+    from string import ascii_lowercase as alpha
+    from time import time
 
-import pandas as pd
-from random import choices
-from string import ascii_lowercase as alpha
-from time import time
-
-algorithms = [lcs_combstr, lcs_combset, lcs_trie, lcs_dynamic]
-df = pd.DataFrame(columns=[algo.__name__ for algo in algorithms])
-for i in range(13):
-    a = "".join(choices(alpha, k=2 ** i))
-    b = "".join(choices(alpha, k=2 ** i))
-    record = pd.Series()
-    for algo in algorithms:
-        t0 = time()
-        print(algo(a, b))
-        t1 = time()
-        record[algo.__name__] = t1 - t0
-    df.loc[2 ** i] = record
+    algorithms = [lcs_combstr, lcs_combset, lcs_trie, lcs_dynamic]
+    df = pd.DataFrame(columns=[algo.__name__ for algo in algorithms])
+    for i in range(13):
+        a = "".join(choices(alpha, k=2 ** i))
+        b = "".join(choices(alpha, k=2 ** i))
+        record = pd.Series()
+        for algo in algorithms:
+            t0 = time()
+            print(algo(a, b))
+            t1 = time()
+            record[algo.__name__] = t1 - t0
+        df.loc[2 ** i] = record
